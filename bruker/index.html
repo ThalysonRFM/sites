@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bruker.py | Documentação & Tutoriais</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --accent-blue: #38bdf8;
+            --accent-teal: #2dd4bf;
+            --accent-purple: #c084fc;
+            --accent-orange: #fb923c;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --code-bg: #090d16;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Sidebar Styling */
+        aside {
+            width: var(--sidebar-width);
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--accent-blue);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .brand svg {
+            width: 28px;
+            height: 28px;
+            fill: currentColor;
+        }
+
+        .nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+            display: block;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-links a.active {
+            color: var(--accent-blue);
+            background-color: rgba(56, 189, 248, 0.1);
+            font-weight: 600;
+        }
+
+        .nav-links a.highlight {
+            color: var(--accent-orange);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 3rem 4rem;
+            max-width: 1000px;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.025em;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+        }
+
+        .meta-tags {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background-color: var(--bg-tertiary);
+            color: var(--accent-blue);
+            font-size: 0.8rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 1rem;
+            font-weight: 500;
+        }
+
+        section {
+            margin-bottom: 3.5rem;
+            scroll-margin-top: 2rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin: 1.75rem 0 0.75rem 0;
+        }
+
+        p {
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            color: #cbd5e1;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* Banner Promocional para Tutoriais */
+        .tutorial-banner {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(45, 212, 191, 0.1));
+            border: 1px solid var(--accent-blue);
+            border-radius: 0.75rem;
+            padding: 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .tutorial-banner-text h3 {
+            font-size: 1.25rem;
+            color: var(--accent-blue);
+            margin-top: 0;
+            margin-bottom: 0.4rem;
+        }
+
+        .tutorial-banner-text p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        .btn-tutorial {
+            background-color: var(--accent-blue);
+            color: var(--bg-primary);
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-tutorial:hover {
+            opacity: 0.9;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: var(--bg-secondary);
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Code Blocks */
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin: 1rem 0 1.5rem 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-teal);
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.85em;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+            font-size: inherit;
+        }
+
+        /* Syntax Highlight Colors */
+        .keyword { color: #f43f5e; }
+        .string { color: #34d399; }
+        .comment { color: #64748b; font-style: italic; }
+        .function { color: #38bdf8; }
+        .number { color: #fbbf24; }
+
+        /* Method Cards */
+        .method-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .method-signature {
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            color: var(--accent-purple);
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Tutorial Card Extra */
+        .tutorial-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .tutorial-card h3 {
+            margin-top: 0;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        /* Dynamic Page Visibility */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active-page {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            aside {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+            main {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+            .tutorial-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside>
+        <a onclick="switchTab('api')" class="brand">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <span>bruker.py</span>
+        </a>
+
+        <div class="nav-group">
+            <div class="nav-title">Navegação Principal</div>
+            <ul class="nav-links">
+                <li><a id="tab-btn-api" onclick="switchTab('api')" class="active">🏠 Documentação (API)</a></li>
+                <li><a id="tab-btn-tutoriais" onclick="switchTab('tutoriais')" class="highlight">🎓 Tutoriais Práticos &rarr;</a></li>
+            </ul>
+        </div>
+
+        <!-- Sub-navegação para Documentação da API -->
+        <div id="subnav-api" class="nav-group">
+            <div class="nav-title">Navegação API</div>
+            <ul class="nav-links">
+                <li><a href="#visão-geral">Visão Geral</a></li>
+                <li><a href="#instalacao">Instalação</a></li>
+                <li><a href="#inicio-rapido">Início Rápido</a></li>
+                <li><a href="#procdata-init">ProcData.__init__()</a></li>
+                <li><a href="#procdata-area">area() & f2area()</a></li>
+                <li><a href="#procdata-redor">redor()</a></li>
+                <li><a href="#procdata-normalize">normalize()</a></li>
+                <li><a href="#procdata-plot">plot() & plot2D()</a></li>
+                <li><a href="#procdata-save">save() & load_pdata_obj()</a></li>
+            </ul>
+        </div>
+
+        <!-- Sub-navegação para Tutoriais -->
+        <div id="subnav-tutoriais" class="nav-group" style="display: none;">
+            <div class="nav-title">Tutoriais Disponíveis</div>
+            <ul class="nav-links">
+                <li><a href="#tut-1d">1. Plotagem 1D Básica</a></li>
+                <li><a href="#tut-integracao">2. Integração e Normalização</a></li>
+                <li><a href="#tut-redor">3. Análise de Curva REDOR</a></li>
+                <li><a href="#tut-2d">4. Espectros 2D e Contornos</a></li>
+                <li><a href="#tut-export">5. Exportação de Dados</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main>
+
+        <!-- ========================================== -->
+        <!-- PÁGINA 1: DOCUMENTAÇÃO DA API (PRINCIPAL) -->
+        <!-- ========================================== -->
+        <div id="page-api" class="page-content active-page">
+            <header>
+                <h1>Documentação Oficial: bruker.py</h1>
+                <p class="subtitle">Referência da API para leitura, processamento e análise quantitativa de RMN Bruker TopSpin em Python.</p>
+                <div class="meta-tags">
+                    <span class="tag">Versão 1.0</span>
+                    <span class="tag">Autor: Marcos de Oliveira Jr.</span>
+                    <span class="tag">Python 3.8+</span>
+                </div>
+            </header>
+
+            <div class="tutorial-banner">
+                <div class="tutorial-banner-text">
+                    <h3>Novo por aqui? Confira nossos Tutoriais Guiados!</h3>
+                    <p>Aprenda passo a passo como plotar espectros 1D/2D, integrar picos, extrair curvas REDOR e exportar dados.</p>
+                </div>
+                <button onclick="switchTab('tutoriais')" class="btn-tutorial">Acessar Tutoriais &rarr;</button>
+            </div>
+
+            <!-- Visão Geral -->
+            <section id="visão-geral">
+                <h2>Visão Geral</h2>
+                <p>O módulo <code>bruker.py</code> foi desenvolvido para automatizar o fluxo de trabalho com espectros de Ressonância Magnética Nuclear (RMN) provenientes do software Bruker TopSpin. Ele encapsula rotinas da biblioteca <code>nmrglue</code>, fornecendo uma interface orientada a objetos para manipular dados 1D e 2D.</p>
+                <p><strong>Recursos Principais:</strong></p>
+                <ul>
+                    <li>Leitura direta de dados de processamento (pastas <code>pdata/1</code> com arquivos <code>1r</code>, <code>2rr</code>).</li>
+                    <li>Cálculo automático de escalas de deslocamento químico ($\delta$ / ppm) e Hz.</li>
+                    <li>Integração de picos espectrais e análise de dados REDOR (Rotational Echo Double Resonance).</li>
+                    <li>Visualização gráfica no estilo de publicações científicas usando Matplotlib.</li>
+                    <li>Exportação para ASCII, DMFit, CSDM e Pickle.</li>
+                </ul>
+            </section>
+
+            <!-- Instalação -->
+            <section id="instalacao">
+                <h2>Instalação</h2>
+                <p>Instale as dependências necessárias através do <code>pip</code>:</p>
+                <pre><code>pip install numpy nmrglue matplotlib csdmpy</code></pre>
+            </section>
+
+            <!-- Início Rápido -->
+            <section id="inicio-rapido">
+                <h2>Início Rápido</h2>
+                <p>Carregando e plotando um espectro 1D em poucas linhas de código:</p>
+                <pre><code><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">from</span> bruker <span class="keyword">import</span> ProcData
+
+<span class="comment"># Instancia e carrega o espectro do diretório processado</span>
+spc = ProcData(<span class="string">r"C:\Dados\Amostra01\pdata\1"</span>)
+
+<span class="comment"># Cria ambiente de figura</span>
+fig, ax = plt.subplots(figsize=(<span class="number">8</span>, <span class="number">4</span>))
+
+<span class="comment"># Plota o espectro para o núcleo de Carbono-13</span>
+spc.plot(axis=ax, nucleus=<span class="string">'13C'</span>, major_ticks_space=<span class="number">50</span>)
+
+ax.set_xlim(<span class="number">220</span>, -<span class="number">10</span>)
+plt.show()</code></pre>
+            </section>
+
+            <!-- Documentação da API -->
+            <section id="api-ref">
+                <h2>Referência da API</h2>
+                
+                <div class="method-card" id="procdata-init">
+                    <div class="method-signature">ProcData(data_dir, verbose=True)</div>
+                    <p><strong>Classe Principal:</strong> Inicializa o objeto de dados de RMN apontando para o caminho do experimento do TopSpin (pasta <code>pdata/1</code>). Lê os binários e carrega os parâmetros de aquisição e processamento.</p>
+                    <p><strong>Atributos Gerados:</strong></p>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Atributo</th>
+                                    <th>Tipo</th>
+                                    <th>Descrição</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>dic</code></td>
+                                    <td>dict</td>
+                                    <td>Dicionário com parâmetros originais Bruker (acqus, procs).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>data</code></td>
+                                    <td>ndarray (complex)</td>
+                                    <td>Array com componentes real e imaginária do espectro.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>ppm_scale</code></td>
+                                    <td>ndarray</td>
+                                    <td>Eixo de deslocamento químico ($\delta$ / ppm) da dimensão f2.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>ppm_scale_1</code></td>
+                                    <td>ndarray</td>
+                                    <td>Eixo $\delta$ / ppm da dimensão f1 (apenas para dados 2D).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>vdlist</code></td>
+                                    <td>ndarray</td>
+                                    <td>Lista de tempos de atraso (carregada se o arquivo <code>vdlist</code> existir).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="method-card" id="procdata-area">
+                    <div class="method-signature">area(region=None) / f2area(region=None)</div>
+                    <p><strong>Integração Quantitativa:</strong> Calcula a área numérica sob o sinal (integração trapezoidal) do espectro 1D ou projeção F2 no intervalo delimitado em ppm (ex: <code>[180, 160]</code>). Se omitido, calcula a área total.</p>
+                </div>
+
+                <div class="method-card" id="procdata-redor">
+                    <div class="method-signature">redor(region=None, return_full_data=False)</div>
+                    <p><strong>Cálculo Dinâmico:</strong> Processa séries temporais de experimentos dipolar-recoupling. Calcula a curva de desfrutamento REDOR ($\Delta S / S_0$) integrando picos específicos para cada tempo de evolução.</p>
+                </div>
+
+                <div class="method-card" id="procdata-normalize">
+                    <div class="method-signature">normalize(method='intensity', region=None)</div>
+                    <p><strong>Tratamento de Dados:</strong> Normaliza a escala de intensidade dos espectros. As opções incluem <code>'intensity'</code> (pico máximo em 1.0), <code>'area'</code> (área integrada em 1.0), <code>'01'</code> (escala entre 0 e 1) e <code>'scans'</code> (divisão por NS).</p>
+                </div>
+
+                <div class="method-card" id="procdata-plot">
+                    <div class="method-signature">plot(axis, nucleus=None, major_ticks_space=None, line_color='k') / plot2D(...)</div>
+                    <p><strong>Visualização Gráfica:</strong> Plota espectros 1D ajustando os eixos em ppm/Hz ou gera mapas de contorno 2D com níveis e paletas personalizáveis, com suporte a projeções <em>skyline</em> acopladas nas bordas.</p>
+                </div>
+
+                <div class="method-card" id="procdata-save">
+                    <div class="method-signature">save(filename, file_type='ascii')</div>
+                    <p><strong>Exportação:</strong> Converte e salva os vetores de intensidade e eixos de deslocamento químico para formatos como ASCII (<code>.dat</code>), DMFit (<code>.txt</code>), CSDM (<code>.csdf</code>) e Pickle (<code>.pkl</code>).</p>
+                </div>
+            </section>
+
+            <!-- Funções Auxiliares -->
+            <section id="load-pdata">
+                <h2>Funções Auxiliares</h2>
+                <div class="method-card">
+                    <div class="method-signature">load_pdata_obj(file_dir)</div>
+                    <p>Recarrega um objeto <code>ProcData</code> salvo anteriormente em formato Pickle.</p>
+                    <pre><code><span class="keyword">from</span> bruker <span class="keyword">import</span> load_pdata_obj
+
+<span class="comment"># Restaura o objeto salvo</span>
+espectro = load_pdata_obj(<span class="string">"meu_espectro.pkl"</span>)</code></pre>
+                </div>
+            </section>
+        </div>
+
+
+        <!-- ========================================== -->
+        <!-- PÁGINA 2: TUTORIAIS PRÁTICOS               -->
+        <!-- ========================================== -->
+        <div id="page-tutoriais" class="page-content">
+            <header>
+                <h1>Tutoriais Práticos</h1>
+                <p class="subtitle">Guias passo a passo para processamento, análise quantitativa e visualização gráfica com o bruker.py.</p>
+                <div class="meta-tags">
+                    <span class="tag">Guias Práticos</span>
+                    <span class="tag">Exemplos de Código</span>
+                    <span class="tag">Casos Reais</span>
+                </div>
+            </header>
+
+            <!-- Tutorial 1 -->
+            <section id="tut-1d">
+                <h2>1. Plotagem 1D Básica e Customização</h2>
+                <div class="tutorial-card">
+                    <p>Aprenda a carregar um experimento 1D e personalizar eixos, cores e marcações de escala de deslocamento químico.</p>
+                    <pre><code><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">from</span> bruker <span class="keyword">import</span> ProcData
+
+<span class="comment"># Carrega dados do TopSpin</span>
+spc = ProcData(<span class="string">r"C:\RMN\Amostra_Polimero\10\pdata\1"</span>)
+
+fig, ax = plt.subplots(figsize=(<span class="number">9</span>, <span class="number">4.5</span>))
+
+<span class="comment"># Plota com parâmetros customizados</span>
+spc.plot(
+    axis=ax, 
+    nucleus=<span class="string">'13C'</span>, 
+    major_ticks_space=<span class="number">20</span>, 
+    line_color=<span class="string">'#0284c7'</span>
+)
+
+ax.set_xlim(<span class="number">200</span>, <span class="number">0</span>)
+ax.set_title(<span class="string">"Espectro 13C CP/MAS"</span>, fontsize=<span class="number">12</span>, fontweight=<span class="string">'bold'</span>)
+plt.tight_layout()
+plt.show()</code></pre>
+                </div>
+            </section>
+
+            <!-- Tutorial 2 -->
+            <section id="tut-integracao">
+                <h2>2. Integração e Normalização de Picos</h2>
+                <div class="tutorial-card">
+                    <p>Como calcular a área sob picos específicos e comparar diferentes amostras normalizando por área ou por número de varreduras (NS).</p>
+                    <pre><code><span class="keyword">from</span> bruker <span class="keyword">import</span> ProcData
+
+spc = ProcData(<span class="string">r"C:\RMN\Amostra_Carbonato\1\pdata\1"</span>)
+
+<span class="comment"># 1. Integração da região de carbonila (170 a 160 ppm)</span>
+area_carb = spc.area(region=(<span class="number">170</span>, <span class="number">160</span>))
+<span class="keyword">print</span>(f<span class="string">"Área da Carbonila: {area_carb:.4f}"</span>)
+
+<span class="comment"># 2. Normaliza todo o espectro em relação a essa área</span>
+spc.normalize(method=<span class="string">'area'</span>, region=(<span class="number">170</span>, <span class="number">160</span>))
+
+<span class="comment"># Agora a área da região (170, 160) é exatamente 1.0</span>
+<span class="keyword">print</span>(f<span class="string">"Área Normalizada: {spc.area(region=(170, 160)):.4f}"</span>)</code></pre>
+                </div>
+            </section>
+
+            <!-- Tutorial 3 -->
+            <section id="tut-redor">
+                <h2>3. Análise de Curva REDOR</h2>
+                <div class="tutorial-card">
+                    <p>Extração automática de curvas de desfrutamento dipolar ($\Delta S / S_0$) a partir de uma série pseudo-2D de experimentos REDOR.</p>
+                    <pre><code><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">from</span> bruker <span class="keyword">import</span> ProcData
+
+<span class="comment"># Carrega a série REDOR 2D</span>
+redor_exp = ProcData(<span class="string">r"C:\RMN\REDOR_13C_15N\pdata\1"</span>)
+
+<span class="comment"># Calcula desfrutamento na região do grupo funcional</span>
+DS, NTR = redor_exp.redor(region=(<span class="number">175</span>, <span class="number">165</span>))
+
+<span class="comment"># Plota a curva de desfrutamento REDOR</span>
+plt.figure(figsize=(<span class="number">6</span>, <span class="number">4</span>))
+plt.plot(NTR, DS, <span class="string">'o-'</span>, color=<span class="string">'#ea580c'</span>, label=<span class="string">'Região Carbonila'</span>)
+plt.xlabel(<span class="string">"Tempo de Recoupling (ms)"</span>)
+plt.ylabel(<span class="string">"ΔS / S0"</span>)
+plt.grid(True, linestyle=<span class="string">'--'</span>, alpha=<span class="number">0.6</span>)
+plt.legend()
+plt.show()</code></pre>
+                </div>
+            </section>
+
+            <!-- Tutorial 4 -->
+            <section id="tut-2d">
+                <h2>4. Espectros 2D e Mapas de Contorno</h2>
+                <div class="tutorial-card">
+                    <p>Gere visualizações de experimentos bidimensionais (HETCOR, SQ-DQ, COSY) ajustando níveis de contorno e paletas de cores.</p>
+                    <pre><code><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">from</span> bruker <span class="keyword">import</span> ProcData
+
+exp2d = ProcData(<span class="string">r"C:\RMN\HETCOR_1H_13C\1\pdata\1"</span>)
+
+fig, ax = plt.subplots(figsize=(<span class="number">7</span>, <span class="number">6</span>))
+
+<span class="comment"># Plota mapa de contornos 2D</span>
+exp2d.plot2D(
+    axis=ax, 
+    cmap=<span class="string">'viridis'</span>, 
+    clevels=<span class="number">15</span>, 
+    clevel_factor=<span class="number">1.3</span>
+)
+
+ax.set_xlabel(<span class="string">"13C (ppm)"</span>)
+ax.set_ylabel(<span class="string">"1H (ppm)"</span>)
+plt.show()</code></pre>
+                </div>
+            </section>
+
+            <!-- Tutorial 5 -->
+            <section id="tut-export">
+                <h2>5. Exportando Dados para Análise Externa</h2>
+                <div class="tutorial-card">
+                    <p>Como exportar o espectro processado para formatos compatíveis com outros softwares de ajuste (ex: DMFit) ou ASCII simples.</p>
+                    <pre><code><span class="keyword">from</span> bruker <span class="keyword">import</span> ProcData
+
+spc = ProcData(<span class="string">r"C:\RMN\Amostra_Silica\1\pdata\1"</span>)
+
+<span class="comment"># Exporta duas colunas [ppm, intensidade] para Origin/Excel</span>
+spc.save(<span class="string">"meu_espectro.dat"</span>, file_type=<span class="string">'ascii'</span>)
+
+<span class="comment"># Exporta no formato específico para fitting no DMFit</span>
+spc.save(<span class="string">"para_dmfit.txt"</span>, file_type=<span class="string">'dmfit'</span>)</code></pre>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>Módulo <code>bruker.py</code> &copy; 2026. Todos os direitos reservados.</p>
+        </footer>
+    </main>
+
+    <!-- Script de alternância simples entre as páginas -->
+    <script>
+        function switchTab(tabName) {
+            // Esconde todas as páginas
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(page => page.classList.remove('active-page'));
+
+            // Remove classe ativa dos botões da sidebar
+            document.getElementById('tab-btn-api').classList.remove('active');
+            document.getElementById('tab-btn-tutoriais').classList.remove('active');
+
+            // Alterna visibilidade e submenus
+            if (tabName === 'api') {
+                document.getElementById('page-api').classList.add('active-page');
+                document.getElementById('tab-btn-api').classList.add('active');
+                document.getElementById('subnav-api').style.display = 'flex';
+                document.getElementById('subnav-tutoriais').style.display = 'none';
+            } else if (tabName === 'tutoriais') {
+                document.getElementById('page-tutoriais').classList.add('active-page');
+                document.getElementById('tab-btn-tutoriais').classList.add('active');
+                document.getElementById('subnav-api').style.display = 'none';
+                document.getElementById('subnav-tutoriais').style.display = 'flex';
+            }
+
+            // Rola suavemente até o topo da página ao trocar de aba
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
