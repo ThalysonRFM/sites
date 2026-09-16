@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação & Tutoriais - agilent.py | Processamento de RMN</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --accent-blue: #38bdf8;
+            --accent-teal: #2dd4bf;
+            --accent-purple: #c084fc;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --code-bg: #090d16;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Sidebar Styling */
+        aside {
+            width: var(--sidebar-width);
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--accent-blue);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .brand svg {
+            width: 28px;
+            height: 28px;
+            fill: currentColor;
+        }
+
+        .nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+            display: block;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-links a.active {
+            color: var(--accent-blue);
+            background-color: rgba(56, 189, 248, 0.1);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 3rem 4rem;
+            max-width: 1000px;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.025em;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+        }
+
+        .meta-tags {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background-color: var(--bg-tertiary);
+            color: var(--accent-blue);
+            font-size: 0.8rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 1rem;
+            font-weight: 500;
+        }
+
+        section {
+            margin-bottom: 3.5rem;
+            scroll-margin-top: 2rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin: 1.75rem 0 0.75rem 0;
+        }
+
+        p {
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            color: #cbd5e1;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: var(--bg-secondary);
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Code Blocks */
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin: 1rem 0 1.5rem 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-teal);
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.85em;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+            font-size: inherit;
+        }
+
+        /* Syntax Highlight Colors */
+        .keyword { color: #f43f5e; }
+        .string { color: #34d399; }
+        .comment { color: #64748b; font-style: italic; }
+        .function { color: #38bdf8; }
+        .number { color: #fbbf24; }
+
+        /* Method Cards */
+        .method-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .method-signature {
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            color: var(--accent-purple);
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Classe para alternar visibilidade */
+        .page-content {
+            display: none;
+        }
+        .page-content.active-page {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            aside {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+            main {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside>
+        <a onclick="showTab('api')" class="brand">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <span>agilent.py</span>
+        </a>
+
+        <!-- NAVEGAÇÃO PRINCIPAL -->
+        <div class="nav-group">
+            <div class="nav-title">Menu Principal</div>
+            <ul class="nav-links">
+                <li><a id="tab-btn-api" class="active" onclick="showTab('api')">Documentação API</a></li>
+                <li><a id="tab-btn-tutoriais" onclick="showTab('tutoriais')">Tutoriais Práticos</a></li>
+            </ul>
+        </div>
+
+        <!-- LINKS DE ÍNDICE DA DOCUMENTAÇÃO API -->
+        <div class="nav-group sidebar-subgroup" id="subgroup-api">
+            <div class="nav-title">Índice da API</div>
+            <ul class="nav-links">
+                <li><a href="#visao-geral">Visão Geral</a></li>
+                <li><a href="#instalacao">Instalação</a></li>
+                <li><a href="#inicio-rapido">Início Rápido</a></li>
+                <li><a href="#ssnakeproc">Classe ssNakeProc</a></li>
+                <li><a href="#load-pdata">Funções Auxiliares</a></li>
+            </ul>
+        </div>
+
+        <!-- LINKS DE ÍNDICE DOS TUTORIAIS -->
+        <div class="nav-group sidebar-subgroup" id="subgroup-tutoriais" style="display: none;">
+            <div class="nav-title">Índice dos Tutoriais</div>
+            <ul class="nav-links">
+                <li><a href="#introducao-tut">Visão Geral</a></li>
+                <li><a href="#passo-1">1. Carregando Dados</a></li>
+                <li><a href="#passo-2">2. Espectros 1D</a></li>
+                <li><a href="#passo-3">3. Integração de Áreas</a></li>
+                <li><a href="#passo-4">4. Análise de REDOR 2D</a></li>
+                <li><a href="#passo-5">5. Exportação e Restauração</a></li>
+                <li><a href="#graficos-customizados">Gráficos para Publicação</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main>
+
+        <!-- ========================================== -->
+        <!-- PÁGINA 1: DOCUMENTAÇÃO API                 -->
+        <!-- ========================================== -->
+        <div id="page-api" class="page-content active-page">
+            <header>
+                <h1>Documentação do Módulo agilent.py</h1>
+                <p class="subtitle">Biblioteca Python para processamento, análise e visualização de dados de RMN Agilent/Varian pré-processados no ssNake.</p>
+                <div class="meta-tags">
+                    <span class="tag">Versão 1.0</span>
+                    <span class="tag">Autor: Marcos de Oliveira Jr.</span>
+                    <span class="tag">Python 3.8+</span>
+                </div>
+            </header>
+
+            <!-- Visão Geral -->
+            <section id="visao-geral">
+                <h2>Visão Geral</h2>
+                <p>O módulo <code>agilent.py</code> foi desenvolvido para automatizar o fluxo de trabalho com espectros de Ressonância Magnética Nuclear (RMN) provenientes de espectrômetros Agilent/Varian e pré-processados no software <strong>ssNake</strong>. Ele encapsula rotinas das bibliotecas <code>nmrglue</code> e <code>csdmpy</code>, fornecendo uma interface orientada a objetos para manipular dados 1D e 2D.</p>
+                <p><strong>Recursos Principais:</strong></p>
+                <ul>
+                    <li>Leitura direta de dados de processamento (diretórios <code>.fid</code> contendo o arquivo de dados brutos e o arquivo <code>.json</code> exportado do ssNake).</li>
+                    <li>Cálculo automático de escalas de deslocamento químico ($\delta$ / ppm) e Hz via objetos CSDM.</li>
+                    <li>Integração de picos espectrais e análise automatizada de experimentos REDOR (Rotational Echo Double Resonance).</li>
+                    <li>Visualização gráfica no estilo de publicações científicas usando Matplotlib.</li>
+                    <li>Exportação flexível para ASCII, DMFit, CSDM e Pickle.</li>
+                </ul>
+            </section>
+
+            <!-- Instalação -->
+            <section id="instalacao">
+                <h2>Instalação e Dependências</h2>
+                <p>Certifique-se de que seu ambiente Python possui as seguintes dependências instaladas:</p>
+                <pre><code>pip install numpy nmrglue matplotlib csdmpy ssnmr_proc</code></pre>
+                <p><strong>Estrutura de Arquivos Requerida:</strong></p>
+                <p>O diretório de entrada precisa conter o arquivo <code>.json</code> do ssNake salvo com o mesmo nome da pasta Agilent:</p>
+                <pre><code>meu_experimento.fid/
+├── FID
+├── procpar
+└── meu_experimento.json  &lt;-- Mesmo nome do diretório .fid</code></pre>
+            </section>
+
+            <!-- Início Rápido -->
+            <section id="inicio-rapido">
+                <h2>Início Rápido</h2>
+                <p>Carregando, normalizando e plotando um espectro 1D em poucas linhas de código:</p>
+                <pre><code><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">from</span> agilent <span class="keyword">import</span> ssNakeProc
+
+<span class="comment"># Instancia e carrega o espectro do diretório .fid com o JSON do ssNake</span>
+spc = ssNakeProc(<span class="string">r"C:\Dados\Amostra01.fid"</span>)
+
+<span class="comment"># Normaliza pela intensidade do pico máximo</span>
+spc.normalize(method=<span class="string">'intensity'</span>)
+
+<span class="comment"># Cria o ambiente gráfico</span>
+fig, ax = plt.subplots(figsize=(<span class="number">8</span>, <span class="number">4</span>))
+
+<span class="comment"># Plota o espectro formatado para Carbono-13</span>
+spc.plot(axis=ax, nucleus=<span class="string">'13C'</span>, major_ticks_space=<span class="number">50</span>)
+
+plt.show()</code></pre>
+            </section>
+
+            <!-- Documentação da Classe ssNakeProc -->
+            <section id="ssnakeproc">
+                <h2>Classe ssNakeProc</h2>
+                <p>Classe principal para carregar, processar e operar sobre um conjunto de dados Agilent/ssNake.</p>
+
+                <div class="method-card" id="ssnakeproc-init">
+                    <div class="method-signature">ssNakeProc(data_dir)</div>
+                    <p><strong>Inicializador.</strong> Carrega os arquivos processados e constrói a representação CSDM e as escalas de frequência e ppm.</p>
+                    <p><strong>Atributos Gerados:</strong></p>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Atributo</th>
+                                    <th>Tipo</th>
+                                    <th>Descrição</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>data</code></td>
+                                    <td>ndarray (complex)</td>
+                                    <td>Array com componentes real e imaginária do espectro.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>fid</code></td>
+                                    <td>ndarray (complex)</td>
+                                    <td>Dados no domínio do tempo (Free Induction Decay).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>ppm_scale</code></td>
+                                    <td>ndarray</td>
+                                    <td>Eixo de deslocamento químico ($\delta$ / ppm).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>hz_scale</code></td>
+                                    <td>ndarray</td>
+                                    <td>Eixo de frequência em Hertz (Hz).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>json</code></td>
+                                    <td>dict</td>
+                                    <td>Dicionário contendo todos os parâmetros originais do ssNake.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>csdm_spec</code></td>
+                                    <td>CSDM</td>
+                                    <td>Objeto CSDM com metadados e dimensões configuradas.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>dic</code></td>
+                                    <td>dict</td>
+                                    <td>Dicionário com parâmetros originais Agilent via <code>nmrglue</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>udic</code></td>
+                                    <td>dict</td>
+                                    <td>Dicionário universal de parâmetros do <code>nmrglue</code>.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="method-card" id="ssnakeproc-area">
+                    <div class="method-signature">area(region=tuple())</div>
+                    <p>Calcula a área (integração trapezoidal) de uma região específica do espectro 1D.</p>
+                    <p><strong>Parâmetros:</strong> <code>region</code> (tuple): Intervalo de integração em ppm, ex: <code>(150, 100)</code>. Se vazio, calcula a área total.</p>
+                    <p><strong>Retorno:</strong> <code>float</code> - Valor absoluto da área.</p>
+                    
+                    <h3 style="margin-top: 1.5rem; font-size: 1.05rem;">f2area(region=tuple())</h3>
+                    <p>Calcula a lista de áreas na dimensão F2 para dados 2D.</p>
+                    <p><strong>Retorno:</strong> <code>ndarray</code> - Array contendo as áreas integradas para cada incremento F2.</p>
+                </div>
+
+                <div class="method-card" id="ssnakeproc-redor">
+                    <div class="method-signature">redor(region=tuple())</div>
+                    <p>Processa experimentos REDOR 2D e extrai a curva de despolarização dipolar.</p>
+                    <p><strong>Retorno:</strong> Tupla <code>(DS, NTR)</code> contendo os valores de atenuação de sinal $\Delta S / S_0$ e os tempos de dephasing ($N_T R_r$) em segundos.</p>
+                </div>
+
+                <div class="method-card" id="ssnakeproc-normalize">
+                    <div class="method-signature">normalize(method='intensity', region=tuple())</div>
+                    <p>Normaliza a intensidade dos dados espectrais.</p>
+                    <p><strong>Opções de Método:</strong></p>
+                    <ul>
+                        <li><code>'intensity'</code>: Define o pico máximo do espectro real como 1.0.</li>
+                        <li><code>'area'</code>: Normaliza a área integrada da região informada para 1.0.</li>
+                        <li><code>'01'</code>: Re-escala e ajusta os dados para o intervalo entre 0 e 1.</li>
+                    </ul>
+                </div>
+
+                <div class="method-card" id="ssnakeproc-plot">
+                    <div class="method-signature">plot(axis, nucleus=None, major_ticks_space=None, minor_ticks_space=None, line_color='k', font_name='Times new roman')</div>
+                    <p>Gera o gráfico 1D formatado no estilo de publicações em um objeto Axes do Matplotlib.</p>
+                </div>
+
+                <div class="method-card" id="ssnakeproc-fourier">
+                    <div class="method-signature">FFT() &amp; iFFT()</div>
+                    <p>Aplica a Transformada Direta de Fourier (<code>FFT()</code>) ou a Transformada Inversa de Fourier (<code>iFFT()</code>) nos dados espectrais.</p>
+                    <p><strong>Outros métodos de manipulação:</strong></p>
+                    <ul>
+                        <li><code>ls(pts=0)</code>: Aplica deslocamento esquerdo (Left Shift) de N pontos.</li>
+                        <li><code>flip()</code>: Inverte o array de dados no eixo horizontal.</li>
+                    </ul>
+                </div>
+
+                <div class="method-card" id="ssnakeproc-save">
+                    <div class="method-signature">save(filename='data.dat', file_type='ascii')</div>
+                    <p>Exporta os dados em diferentes formatos. Opções de <code>file_type</code>:</p>
+                    <ul>
+                        <li><code>'ascii'</code>: Arquivo de texto em colunas [ppm, intensidade].</li>
+                        <li><code>'dmfit'</code>: Formato legível pelo software DMFit [Hz, intensidade].</li>
+                        <li><code>'csdf'</code>: Arquivo serializado da biblioteca CSDM.</li>
+                        <li><code>'pickle'</code>: Serializa a instância completa da classe Python.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Funções Auxiliares -->
+            <section id="load-pdata">
+                <h2>Funções Auxiliares</h2>
+                <div class="method-card">
+                    <div class="method-signature">load_pdata_obj(file_dir)</div>
+                    <p>Recarrega uma instância da classe <code>ssNakeProc</code> salva anteriormente em formato Pickle.</p>
+                    <pre><code><span class="keyword">from</span> agilent <span class="keyword">import</span> load_pdata_obj
+
+<span class="comment"># Restaura o objeto salvo</span>
+espectro = load_pdata_obj(<span class="string">"meu_espectro.pickle"</span>)</code></pre>
+                </div>
+            </section>
+        </div>
+
+
+        <!-- ========================================== -->
+        <!-- PÁGINA 2: TUTORIAIS PRÁTICOS               -->
+        <!-- ========================================== -->
+        <div id="page-tutoriais" class="page-content">
+            <header>
+                <h1>Tutorial Prático do Módulo agilent.py</h1>
+                <p class="subtitle">Guia passo a passo para carregar, tratar, integrar e exportar dados de RMN com Python.</p>
+                <div class="meta-tags">
+                    <span class="tag">Tutorial</span>
+                    <span class="tag">RMN Agilent/Varian</span>
+                    <span class="tag">ssNake</span>
+                </div>
+            </header>
+
+            <!-- Introdução -->
+            <section id="introducao-tut">
+                <h2>Visão Geral do Tutorial</h2>
+                <p>Este tutorial orienta no uso prático do módulo <code>agilent.py</code>. Você aprenderá como automatizar a análise de espectros 1D e experimentos 2D (como REDOR), personalizar visualizações para artigos científicos e exportar os resultados tratados.</p>
+            </section>
+
+            <!-- Pré-requisitos -->
+            <section id="pre-requisitos">
+                <h2>Pré-requisitos</h2>
+                <p>Antes de iniciar, verifique se possui os pacotes necessários configurados no ambiente Python:</p>
+                <pre><code>pip install numpy nmrglue matplotlib csdmpy ssnmr_proc</code></pre>
+                <p>Certifique-se de que seus arquivos estejam salvos no seguinte formato:</p>
+                <pre><code>amostra.fid/
+├── FID
+├── procpar
+└── amostra.json  &lt;-- Exportado via ssNake com o mesmo nome do diretório</code></pre>
+            </section>
+
+            <!-- Passo 1 -->
+            <section id="passo-1">
+                <h2>1. Carregando Dados</h2>
+                <p>A classe <code>ssNakeProc</code> lê automaticamente a pasta <code>.fid</code> e o arquivo de metadados <code>.json</code> gerado pelo ssNake.</p>
+                <pre><code><span class="keyword">from</span> agilent <span class="keyword">import</span> ssNakeProc
+
+<span class="comment"># Inicializa o objeto apontando para o diretório .fid</span>
+espectro = ssNakeProc(<span class="string">r"C:\Experimentos\MinhaAmostra.fid"</span>)
+
+<span class="comment"># Exibe informações do eixo ppm e dos dados</span>
+print(<span class="string">f"Pontos no espectro: {len(espectro.ppm_scale)}"</span>)
+print(<span class="string">f"Intervalo em ppm: {espectro.ppm_scale.max():.2f} a {espectro.ppm_scale.min():.2f}"</span>)</code></pre>
+            </section>
+
+            <!-- Passo 2 -->
+            <section id="passo-2">
+                <h2>2. Processando Espectros 1D</h2>
+                <p>É possível aplicar manipulações no domínio da frequência ou do tempo, além de normalizar o sinal.</p>
+                <pre><code><span class="comment"># Normaliza a intensidade do sinal máximo para 1.0</span>
+espectro.normalize(method=<span class="string">'intensity'</span>)
+
+<span class="comment"># Exemplo de transformada inversa e aplicação de Left Shift</span>
+espectro.iFFT()
+espectro.ls(pts=<span class="number">2</span>)
+espectro.FFT()</code></pre>
+            </section>
+
+            <!-- Passo 3 -->
+            <section id="passo-3">
+                <h2>3. Integração de Áreas</h2>
+                <p>Você pode calcular a área trapezoidal do espectro total ou restringir para uma região específica em ppm.</p>
+                <pre><code><span class="comment"># Calcula a área da região entre 180 e 160 ppm (ex: carbonila)</span>
+area_carbonila = espectro.area(region=(<span class="number">180</span>, <span class="number">160</span>))
+print(<span class="string">f"Área Integrada: {area_carbonila:.4f}"</span>)
+
+<span class="comment"># Normaliza o espectro com base nessa área</span>
+espectro.normalize(method=<span class="string">'area'</span>, region=(<span class="number">180</span>, <span class="number">160</span>))</code></pre>
+            </section>
+
+            <!-- Passo 4 -->
+            <section id="passo-4">
+                <h2>4. Análise de REDOR 2D</h2>
+                <p>Para conjuntos de dados 2D de desacoplamento dipolar (REDOR), o método <code>redor()</code> extrai a curva de despolarização automaticamente.</p>
+                <pre><code><span class="comment"># Carrega um experimento 2D REDOR</span>
+redor_exp = ssNakeProc(<span class="string">r"C:\Experimentos\REDOR_2D.fid"</span>)
+
+<span class="comment"># Define a região de interesse do pico e extrai DS (delta S / S0) e NTR (tempo)</span>
+DS, NTR = redor_exp.redor(region=(<span class="number">120</span>, <span class="number">100</span>))
+
+<span class="comment"># Exibe os resultados calculados</span>
+<span class="keyword">for</span> t, ds <span class="keyword">in</span> zip(NTR, DS):
+    print(<span class="string">f"Tempo: {t*1e3:.2f} ms | DS/S0: {ds:.4f}"</span>)</code></pre>
+            </section>
+
+            <!-- Passo 5 -->
+            <section id="passo-5">
+                <h2>5. Exportação e Restauração</h2>
+                <p>Salve os resultados para análise posterior em outros softwares ou restaure o objeto tratado diretamente no Python.</p>
+                <pre><code><span class="comment"># Salva o espectro em formato de texto ASCII (ppm vs intensidade)</span>
+espectro.save(filename=<span class="string">"espectro_processado.txt"</span>, file_type=<span class="string">'ascii'</span>)
+
+<span class="comment"># Salva o estado completo do objeto Python usando Pickle</span>
+espectro.save(filename=<span class="string">"sessao.pickle"</span>, file_type=<span class="string">'pickle'</span>)
+
+<span class="comment"># Restauração posterior em outro script:</span>
+<span class="keyword">from</span> agilent <span class="keyword">import</span> load_pdata_obj
+espectro_restaurado = load_pdata_obj(<span class="string">"sessao.pickle"</span>)</code></pre>
+            </section>
+
+            <!-- Exemplos Avançados -->
+            <section id="graficos-customizados">
+                <h2>Gráficos para Publicação</h2>
+                <p>Gere figuras customizadas prontas para submissão usando o Matplotlib em conjunto com o método <code>plot()</code>.</p>
+                <pre><code><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+
+fig, ax = plt.subplots(figsize=(<span class="number">9</span>, <span class="number">4.5</span>), dpi=<span class="number">300</span>)
+
+<span class="comment"># Plota com formatação para Carbono-13 e marcas principais a cada 20 ppm</span>
+espectro.plot(
+    axis=ax, 
+    nucleus=<span class="string">'13C'</span>, 
+    major_ticks_space=<span class="number">20</span>, 
+    minor_ticks_space=<span class="number">5</span>, 
+    line_color=<span class="string">'#0284c7'</span>
+)
+
+ax.set_title(<span class="string">"Espectro de RMN de 13C CP-MAS"</span>, fontsize=<span class="number">12</span>, pad=<span class="number">12</span>)
+plt.tight_layout()
+plt.show()</code></pre>
+            </section>
+        </div>
+
+        <footer>
+            <p>Módulo <code>agilent.py</code> &copy; 2026. Todos os direitos reservados.</p>
+        </footer>
+    </main>
+
+    <!-- SCRIPT JAVASCRIPT PARA GERENCIAR NAVEGAÇÃO SPA -->
+    <script>
+        function showTab(tabName) {
+            // Esconde todas as páginas
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(page => page.classList.remove('active-page'));
+
+            // Remove classe active de todos os botões do menu
+            document.getElementById('tab-btn-api').classList.remove('active');
+            document.getElementById('tab-btn-tutoriais').classList.remove('active');
+
+            // Esconde os subgrupos da sidebar
+            document.getElementById('subgroup-api').style.display = 'none';
+            document.getElementById('subgroup-tutoriais').style.display = 'none';
+
+            // Ativa a página e o menu correspondente
+            if (tabName === 'api') {
+                document.getElementById('page-api').classList.add('active-page');
+                document.getElementById('tab-btn-api').classList.add('active');
+                document.getElementById('subgroup-api').style.display = 'flex';
+            } else if (tabName === 'tutoriais') {
+                document.getElementById('page-tutoriais').classList.add('active-page');
+                document.getElementById('tab-btn-tutoriais').classList.add('active');
+                document.getElementById('subgroup-tutoriais').style.display = 'flex';
+            }
+
+            // Rola para o topo suavemente
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
